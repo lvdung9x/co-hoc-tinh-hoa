@@ -1,221 +1,145 @@
-# 📋 HANDOVER - Dự Án "Á Đông Huyền Bí"
+# HANDOVER - Cổ Học Tinh Hoa
 
-> **Cập nhật lần cuối:** 2026-01-05
-> **Trạng thái:** Phase 3 hoàn thành, sẵn sàng Phase 4
+> File này dùng để tiếp tục dự án. Chỉ cần nói: "Đọc file HANDOVER.md và tiếp tục dự án"
 
----
+## Tổng quan dự án
 
-## 🎯 Tổng Quan Dự Án
+**Tên:** Cổ Học Tinh Hoa (Ancient Wisdom)
+**Mô tả:** Ứng dụng web về văn hóa tâm linh và chiêm tinh học phương Đông
+**GitHub:** https://github.com/nclamvn/co-hoc-tinh-hoa
+**Tech:** React 18 + Vite + Tailwind CSS + Framer Motion
 
-**Tên:** Á Đông Huyền Bí (Eastern Mystique)
-**Mô tả:** Web app tử vi, tướng số, thần số học theo văn hóa Á Đông, tích hợp AI (OpenAI GPT-4)
-**Tech Stack:** React 19 + Vite 7 + Tailwind CSS 4 + Framer Motion + OpenAI API
+## Trạng thái hiện tại
 
----
+### Đã hoàn thành
+- [x] Trang chủ với Hero section
+- [x] Navigation với mega menu dropdown
+- [x] Trang Tử Vi (AstrologyPage) - nhập ngày sinh, tính Mệnh Cung
+- [x] Trang Thần Số Học (NumerologyPage) - tính Life Path, Expression, Soul Urge, Personality, Birthday
+- [x] Trang Lịch Vạn Niên (LunarCalendarPage) - đầy đủ tính năng
+- [x] Database kiến giải Thần Số Học (src/data/numerologyMeanings/)
+- [x] Database kiến giải Tử Vi (src/data/tuViMeanings/)
+- [x] Dịch tiếng Trung → Việt cho festivals, activities, spirits trong lịch
+- [x] Responsive layout
 
-## ✅ ĐÃ HOÀN THÀNH
-
-### Phase 1: Core Features
-| Module | File | Trạng thái |
-|--------|------|------------|
-| Landing Page | `src/pages/HomePage.jsx` | ✅ |
-| Header Navigation | `src/components/Header.jsx` | ✅ |
-| Thần Số Học | `src/pages/NumerologyPage.jsx` | ✅ + AI |
-| Tử Vi | `src/pages/AstrologyPage.jsx` | ✅ + AI |
-| Tướng Tay | `src/pages/PalmistryPage.jsx` | ✅ + AI + Vision |
-| Tướng Mặt | `src/pages/PhysiognomyPage.jsx` | ✅ + AI + Vision |
-| Báo Cáo Tổng Hợp | `src/pages/ReportPage.jsx` | ✅ + AI |
-
-### Phase 2: AI Integration
-| Tính năng | Trạng thái |
-|-----------|------------|
-| OpenAI API setup | ✅ `.env` đã config |
-| Streaming responses | ✅ `src/utils/openai.js` |
-| GPT-4 Vision (ảnh tay/mặt) | ✅ |
-| Phân tích Thần Số Học | ✅ |
-| Luận giải Tử Vi | ✅ |
-| Báo cáo tổng hợp | ✅ |
-
-### Phase 3: Export PDF
-| Tính năng | Trạng thái |
-|-----------|------------|
-| html2canvas + jspdf | ✅ Đã cài |
-| PDF Generator Service | ✅ `src/services/pdfGenerator.js` |
-| PDF Layout đẹp | ✅ Header, Footer, Cards |
-| Nút Tải PDF | ✅ Trong ReportPage |
-
----
-
-## 📁 CẤU TRÚC DỰ ÁN
+### Cấu trúc file quan trọng
 
 ```
-/Users/mac/tuviAI/
-├── .env                          # OpenAI API Key (KHÔNG COMMIT)
-├── .gitignore                    # Bảo mật
-├── package.json                  # Dependencies
-├── vite.config.js               # Vite config
-├── index.html                   # Entry HTML
-├── HANDOVER.md                  # File này
+src/
+├── pages/
+│   ├── HomePage.jsx
+│   ├── AstrologyPage.jsx      # Tử Vi
+│   ├── NumerologyPage.jsx     # Thần Số Học
+│   ├── LunarCalendarPage.jsx  # Lịch Vạn Niên
+│   ├── PalmistryPage.jsx      # Xem Tướng Tay
+│   └── PhysiognomyPage.jsx    # Xem Tướng Mặt
 │
-├── public/
-│   └── vite.svg
+├── data/
+│   ├── numerologyMeanings/
+│   │   ├── index.js           # Export tất cả
+│   │   ├── lifePathMeaning.js # Số Chủ Đạo (1-9, 11, 22)
+│   │   ├── expressionMeaning.js
+│   │   ├── soulUrgeMeaning.js
+│   │   ├── personalityMeaning.js
+│   │   ├── birthdayMeaning.js
+│   │   └── cyclesMeaning.js   # Pinnacles & Challenges
+│   │
+│   └── tuViMeanings/
+│       ├── index.js
+│       ├── cungMeaning.js     # 12 Cung
+│       └── chinhTinhMeaning.js # 14 Chính Tinh
 │
-└── src/
-    ├── main.jsx                 # React entry
-    ├── App.jsx                  # Router/Layout
-    ├── index.css                # Global styles + Tailwind
-    │
-    ├── components/
-    │   └── Header.jsx           # Navigation header
-    │
-    ├── pages/
-    │   ├── HomePage.jsx         # Landing page
-    │   ├── NumerologyPage.jsx   # Thần số học + AI
-    │   ├── AstrologyPage.jsx    # Tử vi + AI
-    │   ├── PalmistryPage.jsx    # Tướng tay + Vision
-    │   ├── PhysiognomyPage.jsx  # Tướng mặt + Vision
-    │   └── ReportPage.jsx       # Báo cáo + PDF export
-    │
-    ├── utils/
-    │   ├── numerology.js        # Tính toán thần số học
-    │   ├── astrology.js         # Tính toán tử vi, can chi
-    │   └── openai.js            # OpenAI service
-    │
-    ├── services/
-    │   └── pdfGenerator.js      # Export PDF
-    │
-    └── assets/
-        └── react.svg
+├── utils/
+│   └── lunarCalendar/
+│       └── lunarEngine.js     # Engine tính âm lịch + dịch tiếng Việt
+│
+├── components/
+│   ├── navigation/Navigation.jsx
+│   └── lunarCalendar/
+│       ├── DayCard.jsx
+│       ├── TodayWidget.jsx
+│       ├── MonthCalendar.jsx
+│       └── DayDetailModal.jsx
+│
+└── App.jsx                    # Router chính
 ```
 
----
+### Navigation IDs (dùng trong App.jsx)
 
-## 🔑 THÔNG TIN QUAN TRỌNG
+```javascript
+// Dịch vụ
+'astrology'     → AstrologyPage
+'numerology'    → NumerologyPage
+'palmistry'     → PalmistryPage
+'physiognomy'   → PhysiognomyPage
 
-### OpenAI API Key
+// Công cụ
+'lunar-calendar'  → LunarCalendarPage
+'auspicious-date' → (chưa làm)
+'compatibility'   → (chưa làm)
+
+// Premium
+'premium'           → PremiumPage
+'premium-numerology'→ (chưa làm)
+'report'            → (chưa làm)
 ```
-File: /Users/mac/tuviAI/.env
-Key: VITE_OPENAI_API_KEY=sk-proj-44yug...
-```
 
-### Chạy Dự Án
+## Các vấn đề đã fix
+
+1. **Import path numerologyMeanings** - phải dùng `/index` explicit
+2. **Syntax error lifePathMeaning.js** - array ending với `}` thay vì `]`
+3. **React object render error** - check `typeof meaning.overview`
+4. **Dropdown bị cắt** - thêm `alignRight` prop cho Premium dropdown
+5. **DayCard bị cắt viewport** - thêm responsive CSS, `max-width: 100%`
+6. **Tiếng Trung trong lịch** - thêm FESTIVAL_TRANSLATIONS, ACTIVITY_TRANSLATIONS trong lunarEngine.js
+
+## Environment Variables
+
 ```bash
-cd /Users/mac/tuviAI
-npm install
-npm run dev
-# → http://localhost:5173/
+# .env (không commit)
+VITE_OPENAI_API_KEY=your_key_here
 ```
 
-### Dependencies Chính
-- `react` ^19.2.0
-- `framer-motion` ^12.23.27
-- `lucide-react` ^0.562.0
-- `lunar-javascript` ^1.7.7 (chuyển đổi âm dương lịch)
-- `openai` ^6.15.0
-- `html2canvas` + `jspdf` (PDF export)
-- `tailwindcss` ^4.1.18
+## Commands
 
----
+```bash
+npm run dev      # Development
+npm run build    # Production build
+npm run preview  # Preview build
+```
 
-## 🚀 CÔNG VIỆC TIẾP THEO (Phase 4+)
+## TODO - Việc có thể làm tiếp
 
-### Phase 4: Deploy Production
-- [ ] Setup Vercel/Netlify
-- [ ] Environment variables trên hosting
-- [ ] Custom domain (nếu có)
-- [ ] SEO meta tags
+### Ưu tiên cao
+- [ ] Trang Xem Ngày Tốt (auspicious-date)
+- [ ] Trang Xem Hợp Tuổi (compatibility)
+- [ ] Hoàn thiện Premium features
 
-### Phase 5: Enhancements (Tùy chọn)
-- [ ] Lưu lịch sử phân tích (LocalStorage hoặc Database)
-- [ ] Đăng ký/Đăng nhập user
-- [ ] So sánh tương hợp 2 người
-- [ ] Xem ngày tốt/xấu
+### Ưu tiên trung bình
+- [ ] Thêm AI analysis với OpenAI
+- [ ] Trang Xem Tướng Tay chi tiết
+- [ ] Trang Xem Tướng Mặt chi tiết
+- [ ] Export PDF báo cáo
+
+### Cải thiện
+- [ ] Code splitting để giảm bundle size
+- [ ] PWA support
 - [ ] Dark/Light mode toggle
-- [ ] Chia sẻ kết quả qua link
-- [ ] PWA (Progressive Web App)
+- [ ] Lưu lịch sử tra cứu (localStorage)
 
-### Bugs/Improvements cần xem
-- [ ] CSS warning về @import (không ảnh hưởng chức năng)
-- [ ] Tối ưu PDF export cho nội dung dài
-- [ ] Loading skeleton cho AI responses
+## Lưu ý quan trọng
 
----
+1. **lunar-javascript** library trả về tiếng Trung, đã được dịch trong `lunarEngine.js`
+2. **Vite** environment variables phải có prefix `VITE_`
+3. **SPA routing** trên Render cần file `public/_redirects`
+4. **API key** đã được gitignore, an toàn để share public
 
-## 🎨 DESIGN SYSTEM
+## Cách tiếp tục
 
-### Màu Sắc
-```css
---color-obsidian: #0D0D0D;   /* Background chính */
---color-charcoal: #1A1A1A;   /* Card background */
---color-gold: #C9A227;        /* Accent chính */
---color-jade: #0A6B5E;        /* Accent phụ */
---color-fire: #C44536;        /* Tử vi */
---color-water: #3D5A80;       /* Tướng mặt */
---color-ivory: #F5F0E8;       /* Text chính */
---color-mist: #B8B0A5;        /* Text phụ */
-```
-
-### Fonts
-- **Display:** Cormorant Garamond (tiêu đề)
-- **Body:** Noto Sans (nội dung)
-
-### Components
-- `.card-mystical` - Card với border gold
-- `.btn-mystical` - Button gradient gold
-- `.input-mystical` - Input field styled
-- `.bg-mystical` - Background gradient
+1. Đọc file này
+2. Chạy `npm run dev` để xem trạng thái hiện tại
+3. Chọn task từ TODO list hoặc yêu cầu tính năng mới
+4. Khi xong, chạy `npm run build` để test production
 
 ---
-
-## 📝 GHI CHÚ CHO DEVELOPER
-
-1. **AI Prompts** được thiết kế để:
-   - Ngôn ngữ đẳng cấp, không mê tín
-   - Output Markdown format
-   - Tập trung phát triển bản thân
-
-2. **Image Upload** (Tướng tay/mặt):
-   - Convert to Base64
-   - Gửi qua GPT-4 Vision
-   - Có option nhập thủ công nếu không muốn upload ảnh
-
-3. **PDF Export**:
-   - Dùng html2canvas để capture DOM
-   - jsPDF để tạo file
-   - Hỗ trợ multi-page tự động
-
----
-
-## 🆘 TROUBLESHOOTING
-
-### Lỗi OpenAI API
-```
-Error: 401 Unauthorized
-→ Kiểm tra API key trong .env
-→ Đảm bảo key còn credit
-```
-
-### Lỗi PDF Export
-```
-Error: Canvas tainted
-→ Ảnh từ URL khác domain
-→ Thêm useCORS: true trong html2canvas
-```
-
-### Dev server không chạy
-```bash
-rm -rf node_modules
-npm install
-npm run dev
-```
-
----
-
-## 📞 LIÊN HỆ
-
-Khi quay lại, chỉ cần nói:
-> "Đọc file HANDOVER.md và tiếp tục công việc"
-
----
-
-*Tạo bởi Claude Code - 2026-01-05*
+*Cập nhật lần cuối: 2026-01-06*
