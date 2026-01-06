@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Calendar, ArrowRight, RotateCcw, Moon, Sun, Bot, Loader2, ChevronDown, ChevronUp, Star, Home, Heart } from 'lucide-react';
+import { Sparkles, Calendar, ArrowRight, RotateCcw, Moon, Sun, ChevronDown, ChevronUp, Star, Home, Heart } from 'lucide-react';
 import { fullAstrologyAnalysis, ZODIAC_INFO } from '../utils/astrology';
-import { streamAnalysis } from '../utils/openai';
 import { getCungMeaning, getAllCungNames } from '../data/tuViMeanings/index';
 
 const containerVariants = {
@@ -117,8 +116,6 @@ export default function AstrologyPage() {
   const [formData, setFormData] = useState({ day: '', month: '', year: '' });
   const [result, setResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
   const [menhCung, setMenhCung] = useState(null);
   const [show12Cung, setShow12Cung] = useState(false);
 
@@ -127,7 +124,6 @@ export default function AstrologyPage() {
     if (!formData.day || !formData.month || !formData.year) return;
 
     setIsAnalyzing(true);
-    setAiAnalysis('');
 
     const analysis = fullAstrologyAnalysis(
       parseInt(formData.year),
@@ -140,82 +136,16 @@ export default function AstrologyPage() {
     const calculatedMenhCung = calculateSimpleMenhCung(analysis.lunar.month, analysis.lunar.year);
     setMenhCung(calculatedMenhCung);
     setIsAnalyzing(false);
-
-    // Start AI analysis
-    setIsAiLoading(true);
-    try {
-      const prompt = `Phân tích tử vi Á Đông chi tiết cho người sinh:
-- Ngày dương lịch: ${formData.day}/${formData.month}/${formData.year}
-- Ngày âm lịch: ${analysis.lunar.day}/${analysis.lunar.month}/${analysis.lunar.year}
-- Can Chi năm sinh: ${analysis.canChi.fullName}
-- Nạp Âm: ${analysis.canChi.napAm}
-- Con giáp: ${analysis.zodiac.name} (${analysis.zodiac.animal})
-- Ngũ hành bản mệnh: ${analysis.element.name}
-- Âm/Dương: ${analysis.yinYang}
-- Tuổi thực: ${analysis.age.real} - Tuổi mụ: ${analysis.age.vietnamese}
-
-Hãy phân tích chi tiết theo thuật tử vi Á Đông:
-1. **Tổng Quan Lá Số**: Ý nghĩa của Can Chi ${analysis.canChi.fullName} và Nạp Âm ${analysis.canChi.napAm}
-2. **Tính Cách & Số Mệnh**: Phân tích sâu về con người tuổi ${analysis.zodiac.animal} mệnh ${analysis.element.name}
-3. **Ngũ Hành Tương Sinh Tương Khắc**: ${analysis.element.name} sinh/khắc với gì, cách cân bằng
-4. **Vận Hạn Năm ${new Date().getFullYear()}** (Năm ${new Date().getFullYear() >= 2024 ? 'Giáp Thìn' : 'Quý Mão'}): Dự báo tổng quan
-5. **Sự Nghiệp & Tài Lộc**: Hướng phát triển phù hợp
-6. **Tình Duyên & Gia Đạo**: Tuổi hợp và lời khuyên
-7. **Lời Khuyên Phong Thủy**: Màu sắc, hướng, vật phẩm hợp mệnh`;
-
-      await streamAnalysis(prompt, (content) => {
-        setAiAnalysis(content);
-      });
-    } catch (error) {
-      setAiAnalysis('Không thể kết nối với AI. Vui lòng thử lại sau.');
-    }
-    setIsAiLoading(false);
   };
 
   const reset = () => {
     setResult(null);
-    setAiAnalysis('');
     setMenhCung(null);
     setShow12Cung(false);
     setFormData({ day: '', month: '', year: '' });
   };
 
   const zodiacInfo = result ? ZODIAC_INFO[result.zodiac.name] : null;
-
-  // Simple markdown renderer
-  const renderMarkdown = (text) => {
-    return text.split('\n').map((line, i) => {
-      if (line.startsWith('### ')) {
-        return <h3 key={i} className="text-xl font-display text-[var(--color-gold)] mt-6 mb-3">{line.replace('### ', '')}</h3>;
-      }
-      if (line.startsWith('## ')) {
-        return <h2 key={i} className="text-2xl font-display text-[var(--color-gold)] mt-6 mb-3">{line.replace('## ', '')}</h2>;
-      }
-      if (line.startsWith('# ')) {
-        return <h1 key={i} className="text-3xl font-display text-[var(--color-gold)] mt-6 mb-4">{line.replace('# ', '')}</h1>;
-      }
-      if (line.startsWith('**') && line.endsWith('**')) {
-        return <p key={i} className="font-semibold text-[var(--color-ivory)] mt-4 mb-2">{line.replace(/\*\*/g, '')}</p>;
-      }
-      if (line.startsWith('- ')) {
-        return <li key={i} className="text-[var(--color-pearl)] ml-4 mb-1">{line.replace('- ', '')}</li>;
-      }
-      if (line.trim() === '') {
-        return <br key={i} />;
-      }
-      const parts = line.split(/(\*\*.*?\*\*)/g);
-      return (
-        <p key={i} className="text-[var(--color-pearl)] leading-relaxed mb-2">
-          {parts.map((part, j) => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-              return <strong key={j} className="text-[var(--color-ivory)]">{part.replace(/\*\*/g, '')}</strong>;
-            }
-            return part;
-          })}
-        </p>
-      );
-    });
-  };
 
   return (
     <div className="min-h-screen bg-mystical pt-24 pb-16 px-4">
@@ -397,44 +327,6 @@ Hãy phân tích chi tiết theo thuật tử vi Á Đông:
                   </AnimatePresence>
                 </div>
               )}
-
-              {/* AI Analysis Section */}
-              <motion.div
-                className="card-mystical rounded-2xl p-6 md:p-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-[var(--color-fire)]/20 border border-[var(--color-fire)]/30 flex items-center justify-center">
-                    <Bot size={20} className="text-[var(--color-fire)]" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl text-[var(--color-ivory)]">Luận Giải AI Chuyên Sâu</h3>
-                    <p className="text-xs text-[var(--color-mist)]">Powered by GPT-4</p>
-                  </div>
-                  {isAiLoading && (
-                    <Loader2 className="ml-auto animate-spin text-[var(--color-gold)]" size={20} />
-                  )}
-                </div>
-
-                <div className="prose prose-invert max-w-none">
-                  {aiAnalysis ? (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-[var(--color-pearl)]"
-                    >
-                      {renderMarkdown(aiAnalysis)}
-                    </motion.div>
-                  ) : (
-                    <div className="flex items-center gap-3 text-[var(--color-mist)]">
-                      <Loader2 className="animate-spin" size={16} />
-                      <span>Đang luận giải lá số tử vi của bạn...</span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
 
               <motion.button onClick={reset} className="flex items-center gap-2 mx-auto text-[var(--color-mist)] hover:text-[var(--color-gold)] transition-colors" whileHover={{ scale: 1.05 }}>
                 <RotateCcw size={18} /> Xem lại
